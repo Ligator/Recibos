@@ -1,0 +1,19 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+default: &default
+  adapter: postgresql
+  encoding: utf8
+  database: payee_payer
+  pool: 5
+  username: abelpacheco
+  password: 
+
+development:
+  <<: *default
+
+production:
+  <<: *default
