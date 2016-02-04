@@ -6,10 +6,10 @@ class ApiSessionsController < ApplicationController
 	def sign_in
 		respond_to do |format|
 			if @user and @user.valid_password?(params[:user_password])
-	    		@transactions = current_user.find_transactions
-				format.json { render :json => {user: @user, transactions: @transactions} }
+	    		@transactions = @user.find_transactions
+				format.json { render :json => {user: @user, transactions: @transactions, status: 200 } }
 			else
-				format.json { render :json => {error: "Usuario o Password incorrecto"} }
+				format.json { render :json => {error: "Usuario o Password incorrecto", status: 401 } }
 			end
 		end
 	end
