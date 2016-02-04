@@ -1,9 +1,10 @@
 class TransactionsController < ApplicationController
+  acts_as_token_authentication_handler_for User
   before_filter :login_required
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
 
   def index
-    @transactions = Transaction.where("payer_id = ? or payee_id = ?", current_user.id, current_user.id)
+    @transactions = current_user.find_transactions
     respond_to do |format|
       format.html
       format.json { render :json => @transactions }

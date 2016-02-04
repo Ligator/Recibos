@@ -7,8 +7,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
 
 gem 'devise'
-gem 'devise_token_auth'
-gem 'omniauth'
+gem 'simple_token_authentication'
 gem 'paper_trail', '~> 3.0.6'
 gem 'pg'
 
