@@ -9,6 +9,12 @@ class User < ActiveRecord::Base
   has_many :outflows, :class_name => 'Transaction', :foreign_key => 'payer_id'
 
   def find_transactions
-    Transaction.where("payer_id = ? or payee_id = ?", self.id, self.id)
+    transactions = Transaction.where("payer_id = ? or payee_id = ?", self.id, self.id)
+    transactions.map do |transaction|
+      receive_money = transaction.payee_id == self.id
+      interested_id = receive_money ? transaction.payer_id : transaction.payee_id
+      interested_user = User.select([:id, :email]).find(interested_id) rescue nil
+      {object: transaction, receive_money: receive_money, interested: interested_user}
+    end
   end
 end
