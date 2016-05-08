@@ -22,6 +22,7 @@ class TransactionsController < ApplicationController
 
   def new
     @transaction = Transaction.new
+    @receive_money = true
     @users = User.select([:id, :email]).where("id != ?", current_user.id)
     respond_to do |format|
       format.html
@@ -40,7 +41,7 @@ class TransactionsController < ApplicationController
       @response = Cloudinary::Uploader.upload(@image) if @image.present?
       if @response.present?
         @transaction.update_attributes(image: @response["url"])
-      else
+      elsif @image.present?
         flash[:error] = "The image was not updated, please try again."
       end
       respond_to do |format|
@@ -57,7 +58,7 @@ class TransactionsController < ApplicationController
       @response = Cloudinary::Uploader.upload(@image) if @image.present?
       if @response.present?
         @transaction.update_attributes(image: @response["url"])
-      else
+      elsif @image.present?
         flash[:error] = "The image was not updated, please try again."
       end
       respond_to do |format|
@@ -78,22 +79,26 @@ class TransactionsController < ApplicationController
 private
 
   def build_params
-    puts "*************************"
     puts "******** params = #{params}"
     @parameters = transaction_params
-    @interested = @parameters.delete(:interested)
     @image      = @parameters.delete(:image)
     @receive_money = @parameters.delete(:receive_money)
-    @parameters[:payee_id] = @receive_money ? current_user.id : @interested
-    @parameters[:payer_id] = @receive_money ? @interested : current_user.id
+
+    if @receive_money == '1'
+      @parameters[:payee_id] = current_user.id
+    else
+      @parameters[:payer_id] = current_user.id
+    end
   end
 
   def set_transaction
     @transaction = Transaction.find(params[:id])
+    @receive_money = @transaction.payee_id == current_user.id
+    @interested_person = @receive_money ? @transaction.payer_id : @transaction.payee_id
     redirect_to :root unless [@transaction.payee_id, @transaction.payer_id].include?(current_user.id)
   end
 
   def transaction_params
-    params.require(:transaction).permit(:date, :amount, :description, :image, :receive_money, :interested)
+    params.require(:transaction).permit(:date, :amount, :description, :image, :receive_money, :payer_id, :payee_id)
   end
 end

@@ -12,30 +12,71 @@
   <% end %>
 
   <div class="field">
+    <%= radio_button_tag "transaction[receive_money]", "1",  @receive_money, class: "receive_money" %>
+    <%= label_tag "transaction_receive_money_1", "Expedir Recibo" %>
+    <%= radio_button_tag "transaction[receive_money]", "0", !@receive_money, class: "receive_money" %>
+    <%= label_tag "transaction_receive_money_0", "Solicitar Recibo" %>
+  </div>
+
+
+  <div class="field show_me_as_payer" style="display:<%= @receive_money ? 'none' : 'block' %>">
+    <%= f.label :payee_id, "El usuario:" %><br>
+    <%= f.select :payee_id, options_from_collection_for_select(@users, "id", "email", @interested_person), {include_blank: "Otra persona"}, {class: "select_tag_transaction_interested"} %>
+  </div>
+
+  <div class="field show_select_payer" style="display:<%= @receive_money ? 'block' : 'none' %>">
+    <%= f.label :payee_id, "Como usuario:" %><br>
+    <%= current_user.email %><br>
+  </div>
+
+  <div class="field show_select_payer" style="display:<%= @receive_money ? 'block' : 'none' %>">
+    <%= f.label :payer_id, "Recibí de:" %><br>
+    <%= f.select :payer_id, options_from_collection_for_select(@users, "id", "email", @interested_person), {include_blank: "Otra persona"}, {class: "select_tag_transaction_interested"} %>
+  </div>
+
+  <div class="field show_me_as_payer" style="display:<%= @receive_money ? 'none' : 'block' %>">
+    <%= f.label :payer_id, "Recibió de mi:" %><br>
+    <%= current_user.email %><br>
+  </div>
+
+  <div class="field ">
+    <%= f.label :amount, "La cantidad de: " %><br>
+    <%= f.text_field :amount %>
+  </div>
+
+  <div class="field">
+    <%= f.label :description, "Por concepto de:" %><br>
+    <%= f.text_area :description %>
+  </div>
+
+  <div class="field">
+    <%= f.label :image, "Imagen" %><br>
+    <%= f.file_field :image %>
+  </div>
+
+  <div class="field">
     <%= f.label :date, "Fecha" %><br>
     <%= f.date_select :date %>
   </div>
-  <div class="field">
-    <%= f.label :amount, "Monto" %><br>
-    <%= f.text_field :amount %>
-  </div>
-  <div class="field">
-    <%= check_box_tag "transaction[receive_money]" %>
-    <%= label_tag "transaction[receive_money]", "¿Estoy recibiendo dinero?" %>
-  </div>
-  <div class="field">
-    <%= f.label :description, "Descripción" %><br>
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :image %><br>
-    <%= f.file_field :image %>
-  </div>
-  <div class="field">
-    <%= label_tag "transaction[interested]", "Persona interesada" %><br>
-    <%= select_tag "transaction[interested]", options_from_collection_for_select(@users, "id", "email"), include_blank: "Otra persona" %>
-  </div>
+
   <div class="actions">
     <%= f.submit %>
   </div>
 <% end %>
+
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $(".select_tag_transaction_interested").change(function(){
+      $(".select_tag_transaction_interested").val($(this).val());
+    });
+    $(".receive_money").change(function(){
+      if($(this).val() == '0'){
+        $(".show_select_payer").hide();
+        $(".show_me_as_payer").show();
+      }else{
+        $(".show_select_payer").show();
+        $(".show_me_as_payer").hide();
+      }
+    });
+  });
+</script>
