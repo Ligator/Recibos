@@ -17,7 +17,9 @@
 
 <p>
   <strong>Image:</strong>
-  <%= @transaction.image %>
+  <% if @transaction.image %>
+    <%= image_tag(@transaction.image, :class => "thumbnail inline") %>
+  <% end %>
 </p>
 
 <p>

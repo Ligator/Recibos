@@ -1,13 +1,15 @@
 class TransactionsController < ApplicationController
+  protect_from_forgery with: :null_session, only: Proc.new { |c| c.request.format.json? }
   acts_as_token_authentication_handler_for User
   before_filter :login_required
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
 
   def index
     @transactions = current_user.find_transactions
+    users = User.select([:id, :email]).where("id != ?", current_user.id)
     respond_to do |format|
       format.html
-      format.json { render :json => @transactions }
+      format.json { render :json => {transactions: @transactions, users: users} }
     end
   end
 
@@ -32,29 +34,36 @@ class TransactionsController < ApplicationController
   end
 
   def create
-    @parameters = transaction_params
-    @interested = @parameters.delete(:interested)
-    @receive_money = @parameters.delete(:receive_money)
-    @parameters[:payee_id] = @receive_money ? current_user.id : @interested
-    @parameters[:payer_id] = @receive_money ? @interested : current_user.id
+    build_params
     @transaction = Transaction.new(@parameters)
-    @transaction.save
-    respond_to do |format|
-      format.html { redirect_to @transaction }
-      format.json { render :json => @transaction }
+    if @transaction.save
+      @response = Cloudinary::Uploader.upload(@image) if @image.present?
+      if @response.present?
+        @transaction.update_attributes(image: @response["url"])
+      else
+        flash[:error] = "The image was not updated, please try again."
+      end
+      respond_to do |format|
+        format.html { redirect_to @transaction }
+        format.json { render :json => @transaction }
+      end
     end
   end
 
   def update
-    @parameters = transaction_params
-    @interested = @parameters.delete(:interested)
-    @receive_money = @parameters.delete(:receive_money)
-    @parameters[:payee_id] = @receive_money ? current_user.id : @interested
-    @parameters[:payer_id] = @receive_money ? @interested : current_user.id
-    @transaction.update(@parameters)
-    respond_to do |format|
-      format.html { redirect_to @transaction }
-      format.json { render :json => @transaction }
+    build_params
+    if @transaction.update(@parameters)
+      Cloudinary::Api.delete_resources([@transaction.image])
+      @response = Cloudinary::Uploader.upload(@image) if @image.present?
+      if @response.present?
+        @transaction.update_attributes(image: @response["url"])
+      else
+        flash[:error] = "The image was not updated, please try again."
+      end
+      respond_to do |format|
+        format.html { redirect_to @transaction }
+        format.json { render :json => @transaction }
+      end
     end
   end
 
@@ -67,6 +76,17 @@ class TransactionsController < ApplicationController
   end
 
 private
+
+  def build_params
+    puts "*************************"
+    puts "******** params = #{params}"
+    @parameters = transaction_params
+    @interested = @parameters.delete(:interested)
+    @image      = @parameters.delete(:image)
+    @receive_money = @parameters.delete(:receive_money)
+    @parameters[:payee_id] = @receive_money ? current_user.id : @interested
+    @parameters[:payer_id] = @receive_money ? @interested : current_user.id
+  end
 
   def set_transaction
     @transaction = Transaction.find(params[:id])

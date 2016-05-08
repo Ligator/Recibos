@@ -10,6 +10,7 @@ gem 'devise'
 gem 'simple_token_authentication'
 gem 'paper_trail', '~> 3.0.6'
 gem 'pg'
+gem 'cloudinary'
 
 gem 'jquery-rails'
 gem 'turbolinks'

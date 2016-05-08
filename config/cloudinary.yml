@@ -1,0 +1,18 @@
+development:
+  cloud_name: ducu86amc
+  api_key: '788347487932829'
+  api_secret: sOh33pTamAi_ihcN45i2UdxYM1k
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: ducu86amc
+  api_key: '788347487932829'
+  api_secret: sOh33pTamAi_ihcN45i2UdxYM1k
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: ducu86amc
+  api_key: '788347487932829'
+  api_secret: sOh33pTamAi_ihcN45i2UdxYM1k
+  enhance_image_tag: true
+  static_image_support: false
