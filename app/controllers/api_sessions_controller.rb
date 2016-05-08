@@ -7,7 +7,8 @@ class ApiSessionsController < ApplicationController
 		respond_to do |format|
 			if @user and @user.valid_password?(params[:user_password])
 	    		@transactions = @user.find_transactions
-				format.json { render :json => {user: @user, transactions: @transactions, status: 200 } }
+    			users = User.select([:id, :email]).where("id != ?", @user.id)
+				format.json { render :json => {user: @user, transactions: @transactions, status: 200, users: users } }
 			else
 				format.json { render :json => {error: "Usuario o Password incorrecto", status: 401 } }
 			end
