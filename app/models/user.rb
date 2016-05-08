@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_many :outflows, :class_name => 'Transaction', :foreign_key => 'payer_id'
 
   def find_transactions
-    transactions = Transaction.where("payer_id = ? or payee_id = ?", self.id, self.id)
+    transactions = Transaction.select([:id, :amount, :description, :date, :image, :payee_id, :payer_id]).where("payer_id = ? or payee_id = ?", self.id, self.id).reverse
     transactions.map do |transaction|
       receive_money = transaction.payee_id == self.id
       interested_id = receive_money ? transaction.payer_id : transaction.payee_id
