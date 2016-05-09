@@ -14,7 +14,7 @@
           <span style="color:gray"><%= transaction[:interested].email if transaction[:interested] %></span>
         </h4>
         <p class="list-group-item-text"><%= transaction[:object].description %></p>
-        <em style="color:gray"><%= transaction[:object].date %></em>
+        <em style="color:gray"><%= transaction[:object].date %></em> <em style="float:right"><%= transaction[:status] %></em>
       </a>
     <% end %>
   </div>
