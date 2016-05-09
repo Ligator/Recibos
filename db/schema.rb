@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204062331) do
+ActiveRecord::Schema.define(version: 20160508222904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,11 +20,15 @@ ActiveRecord::Schema.define(version: 20160204062331) do
     t.date     "date"
     t.decimal  "amount"
     t.text     "description"
-    t.string   "image",       limit: 255
+    t.string   "image",         limit: 255
     t.integer  "payer_id"
     t.integer  "payee_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "confirm_payee",             default: false
+    t.boolean  "confirm_payer",             default: false
+    t.boolean  "seen_by_payer",             default: false
+    t.boolean  "seen_by_payee",             default: false
   end
 
   create_table "users", force: :cascade do |t|
