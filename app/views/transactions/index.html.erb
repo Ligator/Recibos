@@ -1,35 +1,22 @@
-<h1>Listing transactions</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Amount</th>
-      <th></th>
-      <th>Interested Person</th>
-      <th>Description</th>
-      <th>Image</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
+<h1>Recibos</h1>
+<%= link_to 'New Transaction', new_transaction_path, class: "btn btn-primary", style: "color:white"%>
+<div class="col-sm-2">
+</div>
+<div class="col-sm-6">
+  <div class="list-group">
     <% @transactions.each do |transaction| %>
-      <tr>
-        <td><%= transaction[:object].date %></td>
-        <td><%= number_to_currency(transaction[:object].amount) %></td>
-        <td><%= transaction[:receive_money] ? " recibidos de " : " pagados a " %></td>
-        <td><%= transaction[:interested].email if transaction[:interested] %></td>
-        <td><%= transaction[:object].description %></td>
-        <td><%= transaction[:object].image %></td>
-        <td><%= link_to 'Show', transaction[:object] %></td>
-        <td><%= link_to 'Edit', edit_transaction_path(transaction[:object]) %></td>
-        <td><%= link_to 'Destroy', transaction[:object], method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+      <a href="<%= edit_transaction_path(transaction[:object]) %>" class="list-group-item">
+        <h4 class="list-group-item-heading">
+          <%= transaction[:receive_money] ? 
+            '<i class="fa fa-arrow-up text-success" aria-hidden="true"></i>'.html_safe : 
+            '<i class="fa fa-arrow-down text-danger" aria-hidden="true"></i>'.html_safe %> 
+          <%= number_to_currency(transaction[:object].amount) %>
+          <span style="color:gray"><%= transaction[:interested].email if transaction[:interested] %></span>
+        </h4>
+        <p class="list-group-item-text"><%= transaction[:object].description %></p>
+        <em style="color:gray"><%= transaction[:object].date %></em>
+      </a>
     <% end %>
-  </tbody>
-</table>
+  </div>
+</div>
 
-<br>
-
-<%= link_to 'New Transaction', new_transaction_path %>

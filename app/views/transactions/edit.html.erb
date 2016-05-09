@@ -3,4 +3,5 @@
 <%= render 'form' %>
 
 <%= link_to 'Show', @transaction %> |
-<%= link_to 'Back', transactions_path %>
+<%= link_to 'Back', transactions_path %> <br>
+<%= link_to 'Eliminar Recibo', @transaction, method: :delete, data: { confirm: '¿Está seguro que desea eliminar este recibo?' } %>

@@ -1,4 +1,4 @@
-<%= form_for(@transaction) do |f| %>
+<%= form_for(@transaction, html: {class: "form-horizontal", role:"form"}) do |f| %>
   <% if @transaction.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
@@ -11,56 +11,81 @@
     </div>
   <% end %>
 
+  <div class="field form-group col-sm-12">
+    <div class="col-sm-6">
+
+    <%= label_tag "transaction_receive_money_1", "Expedir Recibo", class: "radio-inline" do %>
+      <%= radio_button_tag "transaction[receive_money]", "1",  @receive_money, class: "receive_money" %>
+      Expedir Recibo
+    <% end %>
+    <%= label_tag "transaction_receive_money_0", "Solicitar Recibo", class: "radio-inline" do %>
+      <%= radio_button_tag "transaction[receive_money]", "0", !@receive_money, class: "receive_money" %>
+      Solicitar Recibo
+    <% end %>
+    </div>
+  </div>
+
+
+  <div class="field show_me_as_payer form-group" style="display:<%= @receive_money ? 'none' : 'block' %>">
+    <%= f.label :payee_id, "El usuario:", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <%= f.select :payee_id, options_from_collection_for_select(@users, "id", "email", @interested_person), {include_blank: "Otra persona"}, {class: "select_tag_transaction_interested form-control"} %>
+    </div>
+  </div>
+
+  <div class="field show_select_payer form-group" style="display:<%= @receive_money ? 'block' : 'none' %>">
+    <%= f.label :payee_id, "Como usuario:", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <div class="form-control"><%= current_user.email %></div>
+    </div>
+  </div>
+
+  <div class="field show_select_payer form-group" style="display:<%= @receive_money ? 'block' : 'none' %>">
+    <%= f.label :payer_id, "Recibí de:", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <%= f.select :payer_id, options_from_collection_for_select(@users, "id", "email", @interested_person), {include_blank: "Otra persona"}, {class: "select_tag_transaction_interested form-control"} %>
+    </div>
+  </div>
+
+  <div class="field show_me_as_payer form-group" style="display:<%= @receive_money ? 'none' : 'block' %>">
+    <%= f.label :payer_id, "Recibió de mi:", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <div class="form-control"><%= current_user.email %></div>
+    </div>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :amount, "La cantidad de: ", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <%= f.text_field :amount, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :description, "Por concepto de:", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <%= f.text_area :description, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :image, "Imagen", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <%= f.file_field :image, class: "form-control" %>
+    </div>
+  </div>
+
   <div class="field">
-    <%= radio_button_tag "transaction[receive_money]", "1",  @receive_money, class: "receive_money" %>
-    <%= label_tag "transaction_receive_money_1", "Expedir Recibo" %>
-    <%= radio_button_tag "transaction[receive_money]", "0", !@receive_money, class: "receive_money" %>
-    <%= label_tag "transaction_receive_money_0", "Solicitar Recibo" %>
+    <%= f.label :date, "Fecha", class: "control-label col-sm-2" %>
+    <div class="col-sm-4">
+      <%= f.date_select :date, class: "form-control" %>
+    </div>
   </div>
 
-
-  <div class="field show_me_as_payer" style="display:<%= @receive_money ? 'none' : 'block' %>">
-    <%= f.label :payee_id, "El usuario:" %><br>
-    <%= f.select :payee_id, options_from_collection_for_select(@users, "id", "email", @interested_person), {include_blank: "Otra persona"}, {class: "select_tag_transaction_interested"} %>
-  </div>
-
-  <div class="field show_select_payer" style="display:<%= @receive_money ? 'block' : 'none' %>">
-    <%= f.label :payee_id, "Como usuario:" %><br>
-    <%= current_user.email %><br>
-  </div>
-
-  <div class="field show_select_payer" style="display:<%= @receive_money ? 'block' : 'none' %>">
-    <%= f.label :payer_id, "Recibí de:" %><br>
-    <%= f.select :payer_id, options_from_collection_for_select(@users, "id", "email", @interested_person), {include_blank: "Otra persona"}, {class: "select_tag_transaction_interested"} %>
-  </div>
-
-  <div class="field show_me_as_payer" style="display:<%= @receive_money ? 'none' : 'block' %>">
-    <%= f.label :payer_id, "Recibió de mi:" %><br>
-    <%= current_user.email %><br>
-  </div>
-
-  <div class="field ">
-    <%= f.label :amount, "La cantidad de: " %><br>
-    <%= f.text_field :amount %>
-  </div>
-
-  <div class="field">
-    <%= f.label :description, "Por concepto de:" %><br>
-    <%= f.text_area :description %>
-  </div>
-
-  <div class="field">
-    <%= f.label :image, "Imagen" %><br>
-    <%= f.file_field :image %>
-  </div>
-
-  <div class="field">
-    <%= f.label :date, "Fecha" %><br>
-    <%= f.date_select :date %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
+  <div class="form-group"> 
+    <div class="col-sm-offset-2 col-sm-10">
+      <%= f.submit "Crear/Editar Recibo", class: "btn btn-default" %>
+    </div>
   </div>
 <% end %>
 
