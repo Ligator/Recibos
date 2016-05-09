@@ -19,6 +19,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 group :development do
+	gem 'pry'
 	gem 'spring'
 	gem "awesome_print", require: 'awesome_print'
 end
