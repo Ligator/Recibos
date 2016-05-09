@@ -3,6 +3,7 @@ class TransactionsController < ApplicationController
   acts_as_token_authentication_handler_for User
   before_filter :login_required
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
+  before_action :can_be_edited?, only: [:edit, :update, :destroy]
 
   def index
     @transactions = current_user.find_transactions
@@ -100,6 +101,10 @@ private
     redirect_to :root unless [@transaction.payee_id, @transaction.payer_id].include?(current_user.id)
   end
 
+  def can_be_edited?
+    redirect_to @transaction if @transaction.confirm_payee and @transaction.confirm_payer
+  end
+  
   def transaction_params
     params.require(:transaction).permit(:date, :amount, :description, :image, :receive_money, :payer_id, :payee_id)
   end
