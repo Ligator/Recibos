@@ -86,8 +86,10 @@ private
 
     if @receive_money == '1'
       @parameters[:payee_id] = current_user.id
+      @parameters[:seen_by_payee] = true
     else
       @parameters[:payer_id] = current_user.id
+      @parameters[:seen_by_payer] = true
     end
   end
 
