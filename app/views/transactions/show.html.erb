@@ -49,7 +49,15 @@
         <td><%= @payments.map(&:amount)[i+1..-1].sum %></td>
         <td>
           <% date = payment.done_date %>
-          <%= date.present? ? ("PAGADO\n"+date.day.to_s+" de "+months[date.month]+" de "+date.year.to_s) : "Pendiente por pagar" %>
+          <% if @transaction.payee_id == current_user.id %>
+            <%= date.present? ? ("PAGADO\n"+date.day.to_s+" de "+months[date.month]+" de "+date.year.to_s) : "Pendiente por pagar" %>
+          <% else %>
+           <% if date.present? %>
+              <%= "PAGADO\n"+date.day.to_s+" de "+months[date.month]+" de "+date.year.to_s %>
+            <% else %>
+              <%= link_to "PAGAR", "/payments/#{payment.id}?payment[done_date]=now", method: :put, class: "btn btn-default btn-sm" %>
+            <% end %>
+          <% end %>
         </td>
       </tr>
     <% end %>

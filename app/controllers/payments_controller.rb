@@ -40,15 +40,20 @@ class PaymentsController < ApplicationController
   # PATCH/PUT /payments/1
   # PATCH/PUT /payments/1.json
   def update
-    respond_to do |format|
-      if @payment.update(payment_params)
-        format.html { redirect_to @payment, notice: 'Payment was successfully updated.' }
-        format.json { render :show, status: :ok, location: @payment }
-      else
-        format.html { render :edit }
-        format.json { render json: @payment.errors, status: :unprocessable_entity }
-      end
+    if payment_params[:done_date] == "now"
+      parameters = payment_params.merge(done_date: Time.now)
     end
+    # respond_to do |format|
+      if @payment.update(parameters)
+        redirect_to "/transactions/#{Transaction.find(@payment.transaction_id).id}"
+        # format.html { redirect_to "/transactions/#{@payment.transaction.id}" }
+        # format.json { render :show, status: :ok, location: @payment }
+      else
+        redirect_to "/transactions/#{Transaction.find(@payment.transaction_id).id}"
+        # format.html { redirect_to @payment.transaction }
+        # format.json { render json: @payment.errors, status: :unprocessable_entity }
+      end
+    # end
   end
 
   # DELETE /payments/1

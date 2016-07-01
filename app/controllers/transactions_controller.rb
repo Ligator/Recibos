@@ -16,7 +16,7 @@ class TransactionsController < ApplicationController
   end
 
   def show
-    @payments = @transaction.payments
+    @payments = @transaction.payments.order("programmed_date")
     respond_to do |format|
       format.html
       format.json { render :json => @transaction }
@@ -36,6 +36,7 @@ class TransactionsController < ApplicationController
 
   def edit
     @users = User.select([:id, :email]).where("id != ?", current_user.id)
+    @users_autocomplete = @users.map{|u| u.email + ", ID:" + u.id.to_s}
   end
 
   def create
