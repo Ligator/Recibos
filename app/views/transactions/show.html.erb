@@ -1,14 +1,5 @@
 <p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Date:</strong>
-  <%= @transaction.date %>
-</p>
-
-<p>
-  <strong>Amount:</strong>
-  <%= @transaction.amount %>
-</p>
+<h2><%= @transaction.name %></h2>
 
 <p>
   <strong>Description:</strong>
@@ -16,21 +7,54 @@
 </p>
 
 <p>
-  <strong>Image:</strong>
-  <% if @transaction.image %>
-    <%= image_tag(@transaction.image, :class => "thumbnail inline") %>
-  <% end %>
+  <strong>Monto:</strong>
+  <%= number_to_currency(@transaction.amount) %>
 </p>
 
 <p>
-  <strong>Payer:</strong>
-  <%= @transaction.payer_id %>
+  <strong>Interés:</strong>
+  <%= @transaction.interest %>%
 </p>
 
 <p>
-  <strong>Payee:</strong>
-  <%= @transaction.payee_id %>
+  <strong>Deudor:</strong>
+  <%= User.find(@transaction.payer_id).email %>
 </p>
 
-<%= link_to 'Edit', edit_transaction_path(@transaction) %> |
-<%= link_to 'Back', transactions_path %>
+<p>
+  <strong>Beneficiario:</strong>
+  <%= User.find(@transaction.payee_id).email %>
+</p>
+
+<% months = %w[m enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre] %>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Fecha programada</th>
+      <th>Monto a pagar</th>
+      <th>Saldo</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @payments.each_with_index do |payment, i| %>
+      <tr class="item">
+        <td><%= i + 1 %></td>
+        <td>
+          <% date = payment.programmed_date %>
+          <%= date.day %> de <%= months[date.month] %> de <%= date.year %><br>
+        </td>
+        <td><%= payment.amount %></td>
+        <td><%= @payments.map(&:amount)[i+1..-1].sum %></td>
+        <td>
+          <% date = payment.done_date %>
+          <%= date.present? ? ("PAGADO\n"+date.day.to_s+" de "+months[date.month]+" de "+date.year.to_s) : "Pendiente por pagar" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Editar', edit_transaction_path(@transaction) %> |
+<%= link_to 'Inicio', transactions_path %>

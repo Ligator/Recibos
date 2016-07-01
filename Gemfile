@@ -13,10 +13,12 @@ gem 'pg'
 gem 'cloudinary'
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 
 gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'thin', '1.6.3'
 
 group :development do
 	gem 'pry'

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_transaction_id: 
+  programmed_date: 2016-07-01 04:18:28
+  done_date: 2016-07-01 04:18:28
+  amount: 9.99
+  confirm_payer: false
+  confirm_payee: false
+
+two:
+  user_transaction_id: 
+  programmed_date: 2016-07-01 04:18:28
+  done_date: 2016-07-01 04:18:28
+  amount: 9.99
+  confirm_payer: false
+  confirm_payee: false

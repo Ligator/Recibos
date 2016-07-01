@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :payments
   get 'api_sessions/sign_in'
   get 'api_sessions/sign_up'
   get 'api_sessions/sign_out'

@@ -6,7 +6,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :inflows,  :class_name => 'Transaction', :foreign_key => 'payee_id'
-  has_many :outflows, :class_name => 'Transaction', :foreign_key => 'payer_id'
+  has_many :outflows, :class_name => 'UserTransaction', :foreign_key => 'user_id'
+  # has_many :inflows,  :class_name => 'Transaction', :foreign_key => 'payee_id'
+  # has_many :outflows, :class_name => 'Transaction', :foreign_key => 'payer_id'
 
   def find_transactions
     transactions = Transaction.where("payer_id = ? or payee_id = ?", self.id, self.id).reverse
@@ -14,6 +16,9 @@ class User < ActiveRecord::Base
       receive_money = transaction.payee_id == self.id
       interested_id = receive_money ? transaction.payer_id : transaction.payee_id
       interested_user = User.select([:id, :email]).find(interested_id) rescue nil
+      total_payed = transaction.payments.where("done_date IS NOT NULL").pluck(:amount).sum
+      total_debit = transaction.payments.pluck(:amount).sum
+      @advance_percentage = total_debit != 0 ? ((total_payed / total_debit) * 100) : 0
       if transaction.confirm_payee and transaction.confirm_payer
         status = "Terminado"
       elsif transaction.confirm_payee == !transaction.confirm_payer
@@ -23,7 +28,7 @@ class User < ActiveRecord::Base
       else
         status = ""
       end
-      {object: transaction, receive_money: receive_money, interested: interested_user, status: status}
+      {object: transaction, receive_money: receive_money, interested: interested_user, status: status, percentage: @advance_percentage}
     end
   end
 end

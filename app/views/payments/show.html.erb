@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User transaction:</strong>
+  <%= @payment.user_transaction %>
+</p>
+
+<p>
+  <strong>Programmed date:</strong>
+  <%= @payment.programmed_date %>
+</p>
+
+<p>
+  <strong>Done date:</strong>
+  <%= @payment.done_date %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @payment.amount %>
+</p>
+
+<p>
+  <strong>Confirm payer:</strong>
+  <%= @payment.confirm_payer %>
+</p>
+
+<p>
+  <strong>Confirm payee:</strong>
+  <%= @payment.confirm_payee %>
+</p>
+
+<%= link_to 'Edit', edit_payment_path(@payment) %> |
+<%= link_to 'Back', payments_path %>

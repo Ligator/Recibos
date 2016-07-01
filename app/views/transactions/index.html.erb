@@ -1,20 +1,25 @@
-<h1>Recibos</h1>
-<%= link_to 'New Transaction', new_transaction_path, class: "btn btn-primary", style: "color:white"%>
+<h1>Adeudos</h1>
+<%= link_to 'Nuevo Adeudo', new_transaction_path, class: "btn btn-primary", style: "color:white"%>
 <div class="col-sm-2">
 </div>
 <div class="col-sm-6">
   <div class="list-group">
     <% @transactions.each do |transaction| %>
-      <a href="<%= edit_transaction_path(transaction[:object]) %>" class="list-group-item">
+      <a href="<%= transaction_path(transaction[:object]) %>" class="list-group-item">
         <h4 class="list-group-item-heading">
-          <%= transaction[:receive_money] ? 
-            '<i class="fa fa-arrow-up text-success" aria-hidden="true"></i>'.html_safe : 
-            '<i class="fa fa-arrow-down text-danger" aria-hidden="true"></i>'.html_safe %> 
-          <%= number_to_currency(transaction[:object].amount) %>
+          <%= transaction[:object].name %><br>
           <span style="color:gray"><%= transaction[:interested].email if transaction[:interested] %></span>
+          <span style="float: right">
+            <%= number_to_currency(transaction[:object].amount) %>
+            <!-- <em style="float: right;color:gray;font-size:70%"> (<%#= transaction[:object].interest %>%)</em> -->
+          </span>
         </h4>
+          <div class="progress progress-striped active">
+            <div class="progress-bar <%= transaction[:object].payee_id == current_user.id ? "progress-bar-success" : "" %>" style="width: <%= transaction[:percentage] %>%"></div>
+          </div>
         <p class="list-group-item-text"><%= transaction[:object].description %></p>
-        <em style="color:gray"><%= transaction[:object].date %></em> <em style="float:right"><%= transaction[:status] %></em>
+        <% payments = transaction[:object].payments %>
+        <em style="color:gray"><%= payments.first.programmed_date.strftime("%d/%m/%Y") if payments.present? %> - <%= payments.last.programmed_date.strftime("%d/%m/%Y") if payments.present? %></em> <em style="float:right"><%= transaction[:status] %></em>
       </a>
     <% end %>
   </div>
