@@ -1,6 +1,8 @@
 <p id="notice"><%= notice %></p>
 <h2><%= @transaction.name %></h2>
 
+<span style="float:right"><%= @transaction.state? %></span>
+
 <p>
   <strong>Description:</strong>
   <%= @transaction.description %>
@@ -50,7 +52,7 @@
         <td>
           <% date = payment.done_date %>
           <% if @transaction.payee_id == current_user.id %>
-            <%= date.present? ? ("PAGADO\n"+date.day.to_s+" de "+months[date.month]+" de "+date.year.to_s) : "Pendiente por pagar" %>
+            <%= date.present? ? ("PAGADO\n"+date.day.to_s+" de "+months[date.month]+" de "+date.year.to_s) : "Pendiente" %>
           <% else %>
            <% if date.present? %>
               <%= "PAGADO\n"+date.day.to_s+" de "+months[date.month]+" de "+date.year.to_s %>
@@ -64,5 +66,7 @@
   </tbody>
 </table>
 
-<%= link_to 'Editar', edit_transaction_path(@transaction) %> |
+<% if @transaction.payee_id == current_user.id %>
+  <%= link_to 'Editar', edit_transaction_path(@transaction) %> |
+<% end %>
 <%= link_to 'Inicio', transactions_path %>

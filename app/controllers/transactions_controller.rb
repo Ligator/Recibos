@@ -105,6 +105,8 @@ private
     puts "******** params = #{params}"
     @parameters = transaction_params
     @parameters[:payee_id] = current_user.id
+    @parameters[:seen_by_payee] = true
+    @parameters[:confirm_by_payee] = true
 
     # @image      = @parameters.delete(:image)
     # @receive_money = @parameters.delete(:receive_money)

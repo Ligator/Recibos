@@ -19,16 +19,7 @@ class User < ActiveRecord::Base
       total_payed = transaction.payments.where("done_date IS NOT NULL").pluck(:amount).sum
       total_debit = transaction.payments.pluck(:amount).sum
       @advance_percentage = total_debit != 0 ? ((total_payed / total_debit) * 100) : 0
-      if transaction.confirm_payee and transaction.confirm_payer
-        status = "Terminado"
-      elsif transaction.confirm_payee == !transaction.confirm_payer
-        status = "Esperando confirmación"
-      elsif transaction.seen_by_payee == !transaction.seen_by_payer
-        status = "Visto"
-      else
-        status = ""
-      end
-      {object: transaction, receive_money: receive_money, interested: interested_user, status: status, percentage: @advance_percentage}
+      {object: transaction, receive_money: receive_money, interested: interested_user, status: transaction.state?, percentage: @advance_percentage}
     end
   end
 end
