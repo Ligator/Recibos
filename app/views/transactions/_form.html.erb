@@ -44,6 +44,7 @@
     <%= f.label :interest, "Interés (%): ", class: "control-label col-sm-2" %>
     <div class="col-sm-4">
       <%= f.text_field :interest, class: "form-control" %>
+      <em id="interest_too_high" style="display:none;color:red">Interés superior al límite permitido legalmente</em>
     </div>
   </div>
 
@@ -95,6 +96,16 @@
 
     $("#transaction_date").datepicker({
       dateFormat: "dd/mm/yy"
+    });
+
+    $("#transaction_interest").change(function(){
+        if($(this).val() > 4){
+          $(this).css("background-color", "red");
+          $("#interest_too_high").show();
+        }else{
+          $(this).css("background-color", "white");
+          $("#interest_too_high").hide();
+        }
     });
   });
 </script>

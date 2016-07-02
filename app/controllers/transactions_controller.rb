@@ -83,6 +83,10 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def history
+    # @user = current_user
+  end
+
   def destroy
     @transaction.destroy
     respond_to do |format|

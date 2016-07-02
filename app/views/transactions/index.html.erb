@@ -15,7 +15,7 @@
           </span>
         </h4>
           <div class="progress progress-striped active">
-            <div class="progress-bar <%= transaction[:object].payee_id == current_user.id ? "progress-bar-success" : "" %>" style="width: <%= transaction[:percentage] %>%"></div>
+            <div class="progress-bar <%= transaction[:object].payee_id == current_user.id ? "progress-bar-success" : "" %>" style="width: <%= transaction[:percentage] == 0 ? 1 : transaction[:percentage] %>%"></div>
           </div>
         <p class="list-group-item-text"><%= transaction[:object].description %></p>
         <% payments = transaction[:object].payments %>
@@ -24,4 +24,5 @@
     <% end %>
   </div>
 </div>
+
 

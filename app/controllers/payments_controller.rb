@@ -45,14 +45,19 @@ class PaymentsController < ApplicationController
     end
     # respond_to do |format|
       if @payment.update(parameters)
-        redirect_to "/transactions/#{Transaction.find(@payment.transaction_id).id}"
+        if Transaction.find(@payment.transaction_id).payments.where("done_date IS NULL").blank?
+          flash[:notice] = "¡Felicidades! has cumplido a tiempo con tus pagos. Puntuación: 100%"
+        end
+        # redirect_to "/transactions/#{Transaction.find(@payment.transaction_id).id}"
         # format.html { redirect_to "/transactions/#{@payment.transaction.id}" }
         # format.json { render :show, status: :ok, location: @payment }
       else
-        redirect_to "/transactions/#{Transaction.find(@payment.transaction_id).id}"
+        flash[:error] = "El pago no se registró"
+        # redirect_to "/transactions/#{Transaction.find(@payment.transaction_id).id}"
         # format.html { redirect_to @payment.transaction }
         # format.json { render json: @payment.errors, status: :unprocessable_entity }
       end
+      redirect_to "/transactions/#{Transaction.find(@payment.transaction_id).id}"
     # end
   end
 
